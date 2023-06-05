@@ -3,7 +3,7 @@
 #======================#
 
 install_requirements:
-	@pip install -r requirements.txt
+	@pip install -r requirements_dev.txt
 
 install:
 	@pip install . -U
