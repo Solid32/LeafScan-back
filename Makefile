@@ -104,5 +104,16 @@ docker_deploy:
 
 download_data:
 	cd $(LOCAL_DATA_PATH)
-	wget https://data.mendeley.com/public-files/datasets/tywbtsjrjv/files/d5652a28-c1d8-4b76-97f3-72fb80f94efc/file_downloaded
-	unzip file_downloaded
+	gcloud storage cp gs://$(BUCKET_NAME)/datas.tar.gz $(LOCAL_DATA_PATH)
+	tar -xf datas.tar.gz
+
+run_train:
+  python -c 'from leafscan.main import train; train()'
+
+run_pred:
+	python -c 'from leafscan.main import train; pred()'
+
+run_evaluate:
+	python -c 'from leafscan.main import evaluate; evaluate()'
+
+run_all: run_train run_pred run_evaluate

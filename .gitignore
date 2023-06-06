@@ -12,6 +12,9 @@
 # Ignore VS Code generated files
 *.vscode
 
+# GCP
+gcp/*
+
 # Raw data
 raw_data/
 *.csv
