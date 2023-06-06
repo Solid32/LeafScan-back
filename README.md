@@ -9,7 +9,10 @@ Data is available on https://data.mendeley.com/datasets/tywbtsjrjv/1
 Document main API endpoints here
 
 # Setup instructions
-Document here for users who want to setup the package locally
+'Make run_all' to :
+- download data's
+- train data
+- evaluate the model
+- predict (still to be done)
 
 # Usage
-Document main functionalities of the package here
