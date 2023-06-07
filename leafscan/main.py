@@ -42,7 +42,7 @@ with mirrored_strategy.scope():
     tf.keras.layers.Dropout(0.2),
     tf.keras.layers.Dense(128, activation='relu'),
     tf.keras.layers.Dropout(0.1),
-    tf.keras.layers.Dense(38, activation='softmax')
+    tf.keras.layers.Dense(39, activation='softmax')
     ])
 
 initial_learning_rate = 0.0015
@@ -61,15 +61,11 @@ from tensorflow.keras.callbacks import EarlyStopping
 es = EarlyStopping(patience=4, restore_best_weights=True)
 
 
-model.compile(optimizer='adam',
-              loss=tf.keras.losses.SparseCategoricalCrossentropy(from_logits=True),
-              metrics=['accuracy'])
-
 #The 'model_checkpoint_callback' save the result of each epoch on the disk
 model_checkpoint_callback = tf.keras.callbacks.ModelCheckpoint(
     filepath=checkpoint_filepath,
     save_weights_only=True,
-    monitor='accuracy',
+    monitor='val_accuracy',
     mode='max',
     save_best_only=True)
 
