@@ -9,7 +9,8 @@ import pandas as pd
 
 
 #comment data_dir first time you use this cell
-data_dir = '/home/rdurs/LeafScan-back/raw_data'
+data_dir = '../raw_data'
+checkpoint_filepath = '../models/tmp'
 
 train_val_ds, test_ds = tf.keras.preprocessing.image_dataset_from_directory(
     data_dir,
@@ -64,9 +65,17 @@ model.compile(optimizer='adam',
               loss=tf.keras.losses.SparseCategoricalCrossentropy(from_logits=True),
               metrics=['accuracy'])
 
+#The 'model_checkpoint_callback' save the result of each epoch on the disk
+model_checkpoint_callback = tf.keras.callbacks.ModelCheckpoint(
+    filepath=checkpoint_filepath,
+    save_weights_only=True,
+    monitor='accuracy',
+    mode='max',
+    save_best_only=True)
+
 
 model.fit(train_ds,
-          callbacks=es,
+          callbacks=[es,model_checkpoint_callback],
           validation_data=val_ds,
           epochs=50)
 
