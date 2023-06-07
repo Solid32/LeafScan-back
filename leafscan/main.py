@@ -23,21 +23,26 @@ train_ds = train_ds.batch(32)
 val_ds = val_ds.batch(32)
 test_ds = test_ds.batch(32)
 
-model = tf.keras.Sequential([
-  tf.keras.layers.Rescaling(1./255, input_shape=(256,256,3)),
-  tf.keras.layers.RandomFlip("horizontal_and_vertical"),
-  tf.keras.layers.CenterCrop(height=224, width=224),
-  tf.keras.layers.RandomRotation(0.2),
-  tf.keras.layers.Conv2D(64, 4, activation='relu'),
-  tf.keras.layers.MaxPooling2D(),
-  tf.keras.layers.Conv2D(32, 3, activation='relu'),
-  tf.keras.layers.Flatten(),
-  tf.keras.layers.Dense(246, activation='relu'),
-  tf.keras.layers.Dropout(0.2),
-  tf.keras.layers.Dense(128, activation='relu'),
-  tf.keras.layers.Dropout(0.1),
-  tf.keras.layers.Dense(38, activation='softmax')
-])
+#Needed to be able to use 2 GPU's on google VM
+#<--
+mirrored_strategy = tf.distribute.MirroredStrategy()
+with mirrored_strategy.scope():
+#-->
+    model = tf.keras.Sequential([
+    tf.keras.layers.Rescaling(1./255, input_shape=(256,256,3)),
+    tf.keras.layers.RandomFlip("horizontal_and_vertical"),
+    tf.keras.layers.CenterCrop(height=224, width=224),
+    tf.keras.layers.RandomRotation(0.2),
+    tf.keras.layers.Conv2D(64, 4, activation='relu'),
+    tf.keras.layers.MaxPooling2D(),
+    tf.keras.layers.Conv2D(32, 3, activation='relu'),
+    tf.keras.layers.Flatten(),
+    tf.keras.layers.Dense(246, activation='relu'),
+    tf.keras.layers.Dropout(0.2),
+    tf.keras.layers.Dense(128, activation='relu'),
+    tf.keras.layers.Dropout(0.1),
+    tf.keras.layers.Dense(38, activation='softmax')
+    ])
 
 initial_learning_rate = 0.0015
 lr_schedule = tf.keras.optimizers.schedules.ExponentialDecay(
