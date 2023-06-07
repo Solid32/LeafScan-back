@@ -8,6 +8,7 @@ import matplotlib.pyplot as plt
 import pandas as pd
 
 
+
 #comment data_dir first time you use this cell
 data_dir = '~/tensorflow_datasets'
 
