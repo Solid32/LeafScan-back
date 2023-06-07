@@ -12,17 +12,20 @@ import pandas as pd
 data_dir = '../raw_data'
 checkpoint_filepath = '../models/tmp'
 
-train_val_ds, test_ds = tf.keras.preprocessing.image_dataset_from_directory(
+dataset = tf.keras.utils.image_dataset_from_directory(
     data_dir,
-    batch_size=32,  # Ajustez la taille du lot selon vos besoins
-    image_size=(256, 256),  # Ajustez la taille des images selon vos besoins
-    shuffle=True,  # Mélange les données si nécessaire
-    seed=42,  # Définit une graine pour la reproductibilité du mélange
-    validation_split=0.1,  # Spécifie la proportion de données à utiliser pour la validation
-    subset="both"  # Spécifie le sous-ensemble à charger (ensemble d'entraînement)
-)
+    batch_size=32,
+    image_size=(256,256),
+    shuffle=True,
+    seed=42
+    )
+
+train_val_ds = dataset.take(round(len(dataset) * 0.9))  # 90% pour l'entraînement
+test_ds = dataset.skip(round(len(dataset) * 0.9))  # 10% pour le test
+
 train_ds = train_val_ds.take(round(len(train_val_ds) * 0.8))  # 80% pour l'entraînement
 val_ds = train_val_ds.skip(round(len(train_val_ds) * 0.8))  # 20% pour le test
+
 
 #Needed to be able to use 2 GPU's on google VM
 #<--
@@ -42,7 +45,7 @@ with mirrored_strategy.scope():
     tf.keras.layers.Dropout(0.2),
     tf.keras.layers.Dense(128, activation='relu'),
     tf.keras.layers.Dropout(0.1),
-    tf.keras.layers.Dense(38, activation='softmax')
+    tf.keras.layers.Dense(39, activation='softmax')
     ])
 
 initial_learning_rate = 0.0015
@@ -61,15 +64,11 @@ from tensorflow.keras.callbacks import EarlyStopping
 es = EarlyStopping(patience=4, restore_best_weights=True)
 
 
-model.compile(optimizer='adam',
-              loss=tf.keras.losses.SparseCategoricalCrossentropy(from_logits=True),
-              metrics=['accuracy'])
-
 #The 'model_checkpoint_callback' save the result of each epoch on the disk
 model_checkpoint_callback = tf.keras.callbacks.ModelCheckpoint(
     filepath=checkpoint_filepath,
     save_weights_only=True,
-    monitor='accuracy',
+    monitor='val_accuracy',
     mode='max',
     save_best_only=True)
 
