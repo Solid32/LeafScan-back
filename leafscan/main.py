@@ -7,20 +7,20 @@ import tensorflow_datasets as tfds
 import matplotlib.pyplot as plt
 import pandas as pd
 
-
 #comment data_dir first time you use this cell
-data_dir = '~/tensorflow_datasets'
+data_dir = '/home/rdurs/LeafScan-back/raw_data'
 
-(train_ds, val_ds, test_ds), metadata = tfds.load(
-    'plant_village',
-    split=['train[:80%]', 'train[80%:90%]', 'train[90%:]'],
-    with_info=True,
-    as_supervised=True,
-    data_dir=data_dir
+train_val_ds, test_ds = tf.keras.preprocessing.image_dataset_from_directory(
+    data_dir,
+    batch_size=32,  # Ajustez la taille du lot selon vos besoins
+    image_size=(256, 256),  # Ajustez la taille des images selon vos besoins
+    shuffle=True,  # Mélange les données si nécessaire
+    seed=42,  # Définit une graine pour la reproductibilité du mélange
+    validation_split=0.1,  # Spécifie la proportion de données à utiliser pour la validation
+    subset="both"  # Spécifie le sous-ensemble à charger (ensemble d'entraînement)
 )
-train_ds = train_ds.batch(32)
-val_ds = val_ds.batch(32)
-test_ds = test_ds.batch(32)
+train_ds = train_val_ds.take(round(len(train_val_ds) * 0.8))  # 80% pour l'entraînement
+val_ds = train_val_ds.skip(round(len(train_val_ds) * 0.8))  # 20% pour le test
 
 model = tf.keras.Sequential([
   tf.keras.layers.Rescaling(1./255, input_shape=(256,256,3)),
