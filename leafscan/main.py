@@ -11,7 +11,7 @@ from tensorflow.keras.callbacks import EarlyStopping
 from data import download_data
 from model import initialize_model, compile , train, evaluate
 
-def operationnal(retrain=False, epoch=20) :
+def operationnal(retrain=False, epoch=1) :
 #comment data_dir first time you use this cell
     train_ds , val_ds , test_ds = download_data()
     if retrain == False:
@@ -22,11 +22,15 @@ def operationnal(retrain=False, epoch=20) :
         print("🚨 model loaded")
     compile(model)
     model, history = train(model, train_ds, val_ds)
-    evaluate(model, test_ds, epoch)
+    evaluate(model, test_ds)
     print("✅ model evaluate")
     model.save('../models')
     print("✅ model saved")
 
+X_pred = tf.keras.utils.image_dataset_from_directory('../Xpred')
+X = []
+for image, labels in X_pred.take(1):
+    X.append(image)
 
 def pred(X):
     model = load_model('../models')
@@ -34,4 +38,5 @@ def pred(X):
     return y_pred
 
 if __name__ == '__main__':
-    operationnal(retrain=True, epochs=10)
+    #operationnal(retrain=True, epoch=10)
+    pred(X)
