@@ -27,7 +27,6 @@ def initialize_model():
         tf.keras.layers.Dropout(0.1),
         tf.keras.layers.Dense(39, activation='softmax')
         ])
-    print("✅ Model compiled")
     return model
 
 def compile(model, lr_rate = 0.0015, dc_steps = 2000, dc_rate = 0.9):
