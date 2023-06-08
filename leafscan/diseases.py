@@ -2,11 +2,9 @@ import csv
 result={}
 
 #Load the CSV file
-with open('diseases.csv', delimiter=';' 'r') as data:
-  for line in csv.DictReader(data):
-      print(line)
-
-
+with open('../LeafScan-back/leafscan/diseases.txt', 'r') as data:
+    csvreader = csv.reader(data, delimiter=';')
+    d = {rows[0].strip():rows[1].strip() for rows in csvreader}
 
 def disease_info(disease_name):
     '''
@@ -14,7 +12,7 @@ def disease_info(disease_name):
     '''
     result['plant_name'] = disease_name.split("__")[0]
     result['disease_name'] = disease_name.split("__")[1].replace("_", " ")
+    result['url']=d[disease_name.strip()]
     return result
 
-disease_name = 'Apple___Cedar_apple_rust'
-disease_info(disease_name)
+print(disease_info('Apple___Cedar_apple_rust'))
