@@ -19,9 +19,6 @@ def operationnal() :
     compile(model)
     model, history = train(model, train_ds, val_ds)
     evaluate(model, test_ds)
-
-    model.evaluate(test_ds)
-
     model.save('../models')
     print("✅ model saved")
 operationnal()
