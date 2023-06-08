@@ -39,7 +39,7 @@ def compile(model, lr_rate = 0.0015, dc_steps = 2000, dc_rate = 0.9):
     optimizer = tf.keras.optimizers.Adam(learning_rate=lr_schedule)
 
     model.compile(optimizer=optimizer,
-                  loss=tf.keras.losses.SparseCategoricalCrossentropy(from_logits=True),
+                  loss=tf.keras.losses.SparseCategoricalCrossentropy(from_logits=False),
               metrics=['accuracy'])
 
 
@@ -61,7 +61,7 @@ def train(model, train_ds , val_ds, epochs = 20, patience = 5):
         verbose=1
     )
 
-    print(f"✅ Model trained on {train_ds.cardinality()} rows with min val MAE: {round(np.min(history.history['accuracy']), 2)}")
+    print(f"✅ Model trained on {train_ds.cardinality()} rows with min val acc: {round(np.min(history.history['accuracy']), 2)}")
 
     return model, history
 
