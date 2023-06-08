@@ -76,7 +76,7 @@ model_checkpoint_callback = tf.keras.callbacks.ModelCheckpoint(
 model.fit(train_ds,
           callbacks=[es,model_checkpoint_callback],
           validation_data=val_ds,
-          epochs=1)
+          epochs=50)
 
 model.save('../models')
 
