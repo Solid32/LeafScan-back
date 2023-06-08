@@ -1,9 +1,12 @@
 
 from fastapi import FastAPI, File, UploadFile
 from fastapi.middleware.cors import CORSMiddleware
-from main import pred
+from leafscan.main import pred
 from  PIL import Image
 import numpy as np
+import cv2
+from numpy import asarray
+
 
 
 
@@ -24,10 +27,12 @@ def root():
     }
 
 @app.post('/predict')
-async def create_upload_file(file: UploadFile):
-    image=Image.open(file)
-    data = np.array(image)
-    return {"np.shape": data.shape}
-    #loaded_img_array = np.asarray(file.resize((256, 256)))[..., :3]
-    #pred_result = pred(loaded_img_array)
-    #return pred_result
+async def receive_image(img: UploadFile=File(...)):
+    ### Receiving and decoding the image
+    contents = await img.read()
+    nparr = np.fromstring(contents, np.uint8)
+    cv2_img = cv2.imdecode(nparr, cv2.IMREAD_COLOR)
+    img_expended = np.expand_dims(cv2_img, axis=0)
+
+    prediction = pred(img_expended) #imput shape (1,256, 256, 3)
+    return round(prediction.max()*100,3)
