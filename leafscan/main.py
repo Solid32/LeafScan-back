@@ -6,24 +6,32 @@ import tensorflow as tf
 import tensorflow_datasets as tfds
 import matplotlib.pyplot as plt
 import pandas as pd
-from tensorflow.keras import models
+from tensorflow.keras import models, load_model
 from tensorflow.keras.callbacks import EarlyStopping
 from data import download_data
 from model import initialize_model, compile , train, evaluate
 
-def operationnal() :
+def operationnal(retrain=False, epoch=20) :
 #comment data_dir first time you use this cell
     train_ds , val_ds , test_ds = download_data()
-
-    model =initialize_model()
+    if retrain == False:
+        model = initialize_model()
+        print("🚨 model initialized")
+    else :
+        model = load_model('../models')
+        print("🚨 model loaded")
     compile(model)
     model, history = train(model, train_ds, val_ds)
-    evaluate(model, test_ds)
+    evaluate(model, test_ds, epoch)
+    print("✅ model evaluate")
     model.save('../models')
     print("✅ model saved")
-operationnal()
+
 
 def pred(X):
-    model = keras.models.load_model('../models')
+    model = load_model('../models')
     y_pred = model.predict(X)
     return y_pred
+
+if __name__ == '__main__':
+    operationnal()
