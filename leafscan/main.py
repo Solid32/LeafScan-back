@@ -9,7 +9,9 @@ import pandas as pd
 from tensorflow.keras.models import load_model
 from tensorflow.keras.callbacks import EarlyStopping
 from leafscan.data import download_data
+from leafscan.bucket_model import load_from_bucket
 from leafscan.model import initialize_model, compile , train, evaluate
+import json
 
 def operationnal(retrain=False, epoch=20,color_mode='rgb') :
 
@@ -23,6 +25,7 @@ def operationnal(retrain=False, epoch=20,color_mode='rgb') :
         model = initialize_model(shape)
         print("🚨 model initialized")
     else :
+        load_from_bucket()
         model = load_model('models')
         print("🚨 model loaded")
     compile(model)
@@ -52,8 +55,8 @@ def translate(y_pred):
                  16: 'Orange Haunglongbing (Citrus greening)',
                  17: 'Peach Bacterial spot',
                  18: 'Peach healthy',
-                 19: 'Pepper, bell Bacterial spot',
-                 20: 'Pepper, bell healthy',
+                 19: 'Pepper bell Bacterial spot',
+                 20: 'Pepper bell healthy',
                  21: 'Potato Early blight',
                  22: 'Potato Late blight',
                  23: 'Potato healthy',
@@ -72,16 +75,16 @@ def translate(y_pred):
                  36: 'Tomato Tomato Yellow Leaf Curl Virus',
                  37: 'Tomato Tomato mosaic virus',
                  38: 'Tomato healthy'}
-    cat_plant = np.argsort(y_pred)[::-1][:3]
-    cat_value = y_pred[cat_plant]
+    cat_plant = np.argsort(y_pred[0])[::-1][:3]
     results = [dict_list[key] for key in cat_plant.tolist()]
-    return {key:value for key, value in zip([dict_list[key] for key in cat_plant.tolist()],[[results[1],cat_value[i]] for i, elem in enumerate(results)])}
+    return {key:value for key, value in zip([dict_list[key] for key in cat_plant.tolist()],[cat_plant[i] for i, elem in enumerate(results)])}
 
 def pred(X):
+    load_from_bucket()
     model = load_model('models')
     y_pred = model.predict(X)
-    #The return needs to be changed to be 'stringify' to the fastAPI
-    return y_pred
+    dict_pred = translate(y_pred)
+    return str(dict_pred)
 
 if __name__ == '__main__':
     operationnal(retrain=False, epoch=50)
