@@ -13,7 +13,7 @@ from leafscan.model import initialize_model, compile , train, evaluate
 
 def operationnal(retrain=False, epoch=20,color_mode='rgb') :
 
-    train_ds , test_ds , val_ds = download_data()
+    train_ds , test_ds , val_ds = download_data(color_mode='grayscale')
     temp = train_ds.element_spec[0].shape
 
 
