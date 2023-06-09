@@ -44,7 +44,7 @@ def compile(model, lr_rate = 0.0015, dc_steps = 2000, dc_rate = 0.9):
     print("✅ Model compiled")
 
     return model
-def train(model, train_ds , val_ds, epochs = 20, patience = 3):
+def train(model, train_ds , val_ds, epochs = 20, patience = 5):
     es = EarlyStopping(
         patience=patience,
         restore_best_weights=True,
