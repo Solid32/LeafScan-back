@@ -72,9 +72,10 @@ def translate(y_pred):
                  36: 'Tomato Tomato Yellow Leaf Curl Virus',
                  37: 'Tomato Tomato mosaic virus',
                  38: 'Tomato healthy'}
-
-    np.argsort(y_pred)[-3,:]
-    pass
+    cat_plant = np.argsort(y_pred)[::-1][:3]
+    cat_value = y_pred[cat_plant]
+    results = [dict_list[key] for key in cat_plant.tolist()]
+    return {key:value for key, value in zip([dict_list[key] for key in cat_plant.tolist()],[[results[1],cat_value[i]] for i, elem in enumerate(results)])}
 
 def pred(X):
     model = load_model('models')
