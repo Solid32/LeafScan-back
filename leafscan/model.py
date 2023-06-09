@@ -27,7 +27,7 @@ def initialize_model(shape):
         ])
     return model
 
-def compile(model, lr_rate = 0.0015, dc_steps = 2000, dc_rate = 0.9):
+def compile(model, lr_rate = 0.002, dc_steps = 2000, dc_rate = 0.9):
     initial_learning_rate = lr_rate
     lr_schedule = tf.keras.optimizers.schedules.ExponentialDecay(
     initial_learning_rate,
@@ -44,6 +44,7 @@ def compile(model, lr_rate = 0.0015, dc_steps = 2000, dc_rate = 0.9):
     print("✅ Model compiled")
 
     return model
+
 def train(model, train_ds , val_ds, epochs = 20, patience = 5):
     es = EarlyStopping(
         patience=patience,

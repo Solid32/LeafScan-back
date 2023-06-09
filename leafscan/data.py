@@ -18,8 +18,8 @@ def download_data(path=None, batch_size=32, image_size=(256,256),shuffle=True, t
     train_val_ds = dataset.take(round(len(dataset) * testratio))  # 90% pour l'entraînement
     test_ds = dataset.skip(round(len(dataset) * testratio))  # 10% pour le test
 
-    train_ds = dataset.take(round(len(train_val_ds) * valratio))  # 90% pour l'entraînement
-    val_ds = dataset.skip(round(len(train_val_ds) * valratio))  # 10% pour le test
+    train_ds = train_val_ds.take(round(len(train_val_ds) * valratio))  # 80% pour l'entraînement
+    val_ds = train_val_ds.skip(round(len(train_val_ds) * valratio))  # 20% pour le test
 
     print("✅ data loaded")
 
