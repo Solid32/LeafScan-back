@@ -1,15 +1,15 @@
 import numpy as np
 import os
-import PIL
-import PIL.Image
+# import PIL
+# import PIL.Image
 import tensorflow as tf
-import tensorflow_datasets as tfds
-import matplotlib.pyplot as plt
+#import tensorflow_datasets as tfds
+# import matplotlib.pyplot as plt
 import pandas as pd
 from tensorflow.keras.models import load_model
 from tensorflow.keras.callbacks import EarlyStopping
-from data import download_data
-from model import initialize_model, compile , train, evaluate
+from leafscan.data import download_data
+from leafscan.model import initialize_model, compile , train, evaluate
 
 def operationnal(retrain=False, epoch=20,color_mode='rgb') :
 
