@@ -1,11 +1,21 @@
 from google.cloud import storage
 
-BUCKET_NAME = "leafscan"
+def load_from_bucket():
+    BUCKET_NAME = "leafscan"
+    storage_filename = "models/*"
+    local_filename = "../models/"
 
-storage_filename = "models/models/saved_model.pb"
-local_filename = "../models/saved_model.pb"
+    client = storage.Client()
+    bucket = client.get_bucket(BUCKET_NAME)
+    blobs = bucket.list_blobs(prefix=storage_filename)
 
-client = storage.Client()
-bucket = client.bucket(BUCKET_NAME)
-blob = bucket.blob(storage_filename)
-blob.download_to_filename(local_filename)
+    for blob in blobs:
+        if "/" in blob.name:
+            # Extract the filename from the full path
+            filename = blob.name.split("/")[-1]
+        else:
+            filename = blob.name
+
+        blob.download_to_filename(local_filename + filename)
+
+    return None
