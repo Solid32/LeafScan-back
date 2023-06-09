@@ -11,11 +11,16 @@ from tensorflow.keras.callbacks import EarlyStopping
 from leafscan.data import download_data
 from leafscan.model import initialize_model, compile , train, evaluate
 
-def operationnal(retrain=False, epoch=1) :
-#comment data_dir first time you use this cell
+def operationnal(retrain=False, epoch=10) :
+
     train_ds , test_ds , val_ds = download_data()
+    temp = train_ds.element_spec[0].shape
+
+
+    shape = tuple(temp.as_list()[1:])
+
     if retrain == False:
-        model = initialize_model()
+        model = initialize_model(shape)
         print("🚨 model initialized")
     else :
         model = load_model('models')
@@ -27,10 +32,6 @@ def operationnal(retrain=False, epoch=1) :
     model.save('../models')
     print("✅ model saved")
 
-# X_pred = tf.keras.utils.image_dataset_from_directory('Xpred')
-#X = []
-#for image, labels in X_pred.take(1):
-#    X.append(image)
 
 def pred(X):
     model = load_model('models')
@@ -39,6 +40,5 @@ def pred(X):
     return y_pred
 
 if __name__ == '__main__':
-    pass
-    #operationnal(retrain=True, epoch=10)
+    operationnal(retrain=True, epoch=20)
     #pred(X)
