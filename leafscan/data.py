@@ -3,7 +3,7 @@ import tensorflow as tf
 def download_data(path=None, batch_size=32, image_size=(256,256),shuffle=True, testratio=0.9, valratio=0.8) :
 
     if path == None :
-        data_dir = '../raw_data'
+        data_dir = 'raw_data'
     else :
         data_dir = path
 
