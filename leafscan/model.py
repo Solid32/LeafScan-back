@@ -1,19 +1,17 @@
 import numpy as np
 import os
-#import PIL
-#import PIL.Image
 import tensorflow as tf
 import tensorflow_datasets as tfds
 import matplotlib.pyplot as plt
 from keras import Model, Sequential, layers, regularizers, optimizers
 from keras.callbacks import EarlyStopping
 
-def initialize_model():
+def initialize_model(shape):
     mirrored_strategy = tf.distribute.MirroredStrategy()
     with mirrored_strategy.scope():
     #-->
         model = tf.keras.Sequential([
-        tf.keras.layers.Rescaling(1./255, input_shape=(256,256,3)),
+        tf.keras.layers.Rescaling(1./255, input_shape=shape),
         tf.keras.layers.RandomFlip("horizontal_and_vertical"),
         tf.keras.layers.CenterCrop(height=224, width=224),
         tf.keras.layers.RandomRotation(0.2),
@@ -22,7 +20,7 @@ def initialize_model():
         tf.keras.layers.Conv2D(32, 3, activation='relu'),
         tf.keras.layers.Flatten(),
         tf.keras.layers.Dense(246, activation='relu'),
-        tf.keras.layers.Dropout(0.2),
+        tf.keras.layers.Dropout(0.1),
         tf.keras.layers.Dense(128, activation='relu'),
         tf.keras.layers.Dropout(0.1),
         tf.keras.layers.Dense(39, activation='softmax')
@@ -46,7 +44,7 @@ def compile(model, lr_rate = 0.0015, dc_steps = 2000, dc_rate = 0.9):
     print("✅ Model compiled")
 
     return model
-def train(model, train_ds , val_ds, epochs = 20, patience = 5):
+def train(model, train_ds , val_ds, epochs = 20, patience = 3):
     es = EarlyStopping(
         patience=patience,
         restore_best_weights=True,

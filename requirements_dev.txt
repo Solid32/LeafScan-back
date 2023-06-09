@@ -21,3 +21,7 @@ python-multipart
 
 # img
 opencv-python
+
+# API
+uvicorn
+fastapi
