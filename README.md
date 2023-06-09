@@ -5,11 +5,12 @@ The goal of this project is to setup a CNN model to detect (some) plant deceases
 Data is available on https://data.mendeley.com/datasets/tywbtsjrjv/1
 
 
-# API
-Document main API endpoints here
+# Setup instructions' to ensure all dependencies are ok
+Use the function 'make install_requirements' to ensure all dependencies are ok
 
-# Setup instructions
-Document here for users who want to setup the package locally
+# API
+To have prediction API running, execute 'make run_api'
+
 
 # Usage
 Document main functionalities of the package here

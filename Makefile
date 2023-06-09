@@ -103,4 +103,5 @@ docker_deploy:
 		--env-vars-file .env.yaml
 
 run_operationnal:
-	python -c 'from leafscan.main import operationnal; operationnal()'
+	@cd leafscan
+	python -c 'from main import operationnal; operationnal()'

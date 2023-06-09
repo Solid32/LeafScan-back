@@ -35,6 +35,4 @@ async def receive_image(img: UploadFile=File(...)):
     img_expended = np.expand_dims(cv2_img, axis=0)
 
     prediction = pred(img_expended) #imput shape (1,256, 256, 3)
-    #'result' is to be refined...
-    result = round(prediction.max()*100,2)
-    return result
+    return prediction
