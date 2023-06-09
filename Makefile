@@ -102,7 +102,5 @@ docker_deploy:
 		--region europe-west1 \
 		--env-vars-file .env.yaml
 
-download_data:
-	cd $(LOCAL_DATA_PATH)
-	wget https://data.mendeley.com/public-files/datasets/tywbtsjrjv/files/d5652a28-c1d8-4b76-97f3-72fb80f94efc/file_downloaded
-	unzip file_downloaded
+run_operationnal:
+	python -c 'from leafscan.main import operationnal; operationnal()'

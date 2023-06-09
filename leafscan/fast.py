@@ -2,10 +2,10 @@
 from fastapi import FastAPI, File, UploadFile
 from fastapi.middleware.cors import CORSMiddleware
 from leafscan.main import pred
-from  PIL import Image
+#from  PIL import Image
 import numpy as np
 import cv2
-from numpy import asarray
+#from numpy import asarray
 
 
 
@@ -35,4 +35,6 @@ async def receive_image(img: UploadFile=File(...)):
     img_expended = np.expand_dims(cv2_img, axis=0)
 
     prediction = pred(img_expended) #imput shape (1,256, 256, 3)
-    return round(prediction.max()*100,3)
+    #'result' is to be refined...
+    result = round(prediction.max()*100,2)
+    return result
