@@ -23,6 +23,7 @@ def operationnal(retrain=False, epoch=25,color_mode='rgb') :
 
 
     shape = tuple(temp.as_list()[1:])
+    print('shape is :'+shape)
 
     if retrain == False:
         model = initialize_model(shape)
