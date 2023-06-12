@@ -99,9 +99,10 @@ docker_deploy:
 		--project $(GCP_PROJECT_ID) \
 		--image $(GCR_MULTI_REGION)/$(GCP_PROJECT_ID)/$(DOCKER_IMAGE_NAME):latest \
 		--platform managed \
+		--memory=2Gi \
 		--region europe-west1 \
 		--env-vars-file .env.yaml
 
 run_operationnal:
 	@cd leafscan
-	python -c 'from main import operationnal; operationnal()'
+	python -c 'from leafscan.main import operationnal; operationnal()'
