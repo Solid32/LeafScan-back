@@ -13,9 +13,9 @@ from leafscan.bucket_model import load_from_bucket
 from leafscan.model import initialize_model, compile , train, evaluate
 import json
 
-def operationnal(retrain=False, epoch=20,color_mode='rgb') :
+def operationnal(retrain=False, epoch=25,color_mode='rgb') :
 
-    train_ds , test_ds , val_ds = download_data(color_mode='grayscale')
+    train_ds , test_ds , val_ds = download_data(color_mode=color_mode)
     temp = train_ds.element_spec[0].shape
 
 

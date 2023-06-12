@@ -5,26 +5,34 @@ import tensorflow as tf
 # import matplotlib.pyplot as plt
 from keras import Model, Sequential, layers, regularizers, optimizers
 from keras.callbacks import EarlyStopping
+from tensorflow.keras.applications import VGG16
 
 def initialize_model(shape):
     mirrored_strategy = tf.distribute.MirroredStrategy()
     with mirrored_strategy.scope():
     #-->
+
+        # Charger le modèle MobileNet sans les poids pré-entraînés
+        gigi = VGG16(
+            input_shape=shape,
+            include_top=False,
+            weights='imagenet'
+        )
+        gigi.trainable = False
         model = tf.keras.Sequential([
-        tf.keras.layers.Rescaling(1./255, input_shape=shape),
-        tf.keras.layers.RandomFlip("horizontal_and_vertical"),
-        tf.keras.layers.CenterCrop(height=224, width=224),
-        tf.keras.layers.RandomRotation(0.2),
-        tf.keras.layers.Conv2D(64, 4, activation='relu'),
-        tf.keras.layers.MaxPooling2D(),
-        tf.keras.layers.Conv2D(32, 3, activation='relu'),
-        tf.keras.layers.Flatten(),
-        tf.keras.layers.Dense(246, activation='relu'),
-        tf.keras.layers.Dropout(0.1),
-        tf.keras.layers.Dense(128, activation='relu'),
-        tf.keras.layers.Dropout(0.1),
-        tf.keras.layers.Dense(39, activation='softmax')
+          tf.keras.layers.Rescaling(1./255, input_shape=(256,256,3)),
+          tf.keras.layers.RandomFlip("horizontal_and_vertical"),
+          tf.keras.layers.RandomRotation(0.2),
+          gigi,
+          tf.keras.layers.Flatten(),
+          tf.keras.layers.Dense(128, activation='relu'),
+          tf.keras.layers.Dropout(0.15),
+          tf.keras.layers.Dense(64, activation='relu'),
+          tf.keras.layers.Dropout(0.1),
+          tf.keras.layers.Dense(39, activation='softmax')
         ])
+    print("✅ Model created")
+    # Afficher les informations sur le modèle
     return model
 
 def compile(model, lr_rate = 0.002, dc_steps = 2000, dc_rate = 0.9):
