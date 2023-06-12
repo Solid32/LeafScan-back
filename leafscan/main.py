@@ -118,5 +118,5 @@ def pred(X):
     return str(dict_pred)
 
 if __name__ == '__main__':
-    operationnal(retrain=False, epoch=50)
+    operationnal(retrain=False, epoch=20)
     #pred(X)
