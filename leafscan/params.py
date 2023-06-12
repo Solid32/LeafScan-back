@@ -1,0 +1,4 @@
+import os
+PROD_MODEL_NAME = os.getenv('PROD_MODEL_NAME')
+MODELS_LOCATION = os.getenv('MODELS_LOCATION')
+BUCKET_NAME = os.getenv('BUCKET_NAME')
