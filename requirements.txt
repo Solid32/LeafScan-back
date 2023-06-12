@@ -1,6 +1,7 @@
 # data science
 numpy
 pandas
+matplotlib
 
 # Uncomment if you use sklearn
 # scikit-learn
