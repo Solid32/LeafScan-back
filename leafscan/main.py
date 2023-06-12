@@ -12,7 +12,9 @@ from tensorflow.keras.callbacks import EarlyStopping
 from leafscan.data import download_data
 from leafscan.bucket_model import load_from_bucket, verify_model_is_loaded
 from leafscan.model import initialize_model, compile , train, evaluate
+from leafscan.params import *
 import json
+
 
 def operationnal(retrain=False, epoch=25,color_mode='rgb') :
 
@@ -33,7 +35,7 @@ def operationnal(retrain=False, epoch=25,color_mode='rgb') :
     model, history = train(model, train_ds, val_ds, epoch)
     evaluate(model, test_ds)
     print("✅ model evaluate")
-    model.save('../models/my_h5_model.h5')
+    model.save(MODELS_LOCATION + "/" + PROD_MODEL_NAME)
     print("✅ model saved")
     train_loss = history.history['loss']
 
@@ -108,7 +110,7 @@ def pred(X):
 
     verify_model_is_loaded()
 
-    model = load_model('models/prod_model.h5')
+    model = load_model(MODELS_LOCATION + "/" + PROD_MODEL_NAME)
     y_pred = model.predict(X)
     dict_pred = translate(y_pred)
 
