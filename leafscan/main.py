@@ -1,4 +1,5 @@
 import numpy as np
+import matplotlib.pyplot as plt
 import os
 # import PIL
 # import PIL.Image
@@ -34,6 +35,29 @@ def operationnal(retrain=False, epoch=25,color_mode='rgb') :
     print("✅ model evaluate")
     model.save('../models')
     print("✅ model saved")
+    train_loss = history.history['loss']
+
+    if 'val_loss' in history.history:
+        val_loss = history.history['val_loss']
+        has_val_loss = True
+    else:
+        has_val_loss = False
+
+    # Set up the plot
+    plt.plot(train_loss, color='blue',  label='Training Loss')
+
+    # If validation loss is available, plot it as well
+    if has_val_loss:
+        plt.plot(val_loss,color='orange', label='Validation Loss')
+
+    # Customize the plot
+    plt.title('Learning Curve')
+    plt.xlabel('Epochs')
+    plt.ylabel('Loss')
+    plt.legend()
+
+    # Save the plot to a file
+    plt.savefig('learning_curve.png')
 
 def translate(y_pred):
     dict_list = {0: 'Apple Apple scab',
@@ -76,8 +100,9 @@ def translate(y_pred):
                  37: 'Tomato Tomato mosaic virus',
                  38: 'Tomato healthy'}
     cat_plant = np.argsort(y_pred[0])[::-1][:3]
+    cat_test = y_pred[0][cat_plant]
     results = [dict_list[key] for key in cat_plant.tolist()]
-    return {key:value for key, value in zip([dict_list[key] for key in cat_plant.tolist()],[cat_plant[i] for i, elem in enumerate(results)])}
+    return {key:value for key, value in zip([dict_list[key] for key in cat_plant.tolist()],[[cat_test[i],cat_plant[i]] for i, elem in enumerate(results)])}
 
 def pred(X):
     load_from_bucket()
