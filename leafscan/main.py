@@ -10,7 +10,7 @@ import pandas as pd
 from tensorflow.keras.models import load_model
 from tensorflow.keras.callbacks import EarlyStopping
 from leafscan.data import download_data
-from leafscan.bucket_model import load_from_bucket
+from leafscan.bucket_model import load_from_bucket, verify_model_is_loaded
 from leafscan.model import initialize_model, compile , train, evaluate
 import json
 
@@ -33,7 +33,7 @@ def operationnal(retrain=False, epoch=25,color_mode='rgb') :
     model, history = train(model, train_ds, val_ds, epoch)
     evaluate(model, test_ds)
     print("✅ model evaluate")
-    model.save('../models')
+    model.save('../models/my_h5_model.h5')
     print("✅ model saved")
     train_loss = history.history['loss']
 
@@ -105,10 +105,13 @@ def translate(y_pred):
     return {key:value for key, value in zip([dict_list[key] for key in cat_plant.tolist()],[[cat_test[i],cat_plant[i]] for i, elem in enumerate(results)])}
 
 def pred(X):
-    load_from_bucket()
-    model = load_model('models')
+
+    verify_model_is_loaded()
+
+    model = load_model('models/prod_model.h5')
     y_pred = model.predict(X)
     dict_pred = translate(y_pred)
+
     return str(dict_pred)
 
 if __name__ == '__main__':
