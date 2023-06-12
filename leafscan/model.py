@@ -10,32 +10,29 @@ from tensorflow.keras.applications import VGG16
 def initialize_model(shape):
     mirrored_strategy = tf.distribute.MirroredStrategy()
     with mirrored_strategy.scope():
-    #-->
+            #-->
+        i = tf.keras.layers.Input([None, None, 3], dtype=tf.uint8)
+        x = tf.cast(i, tf.float32)
+        x = tf.keras.applications.vgg16.preprocess_input(x)
+        core = tf.keras.applications.VGG16(include_top=False, weights='imagenet')
 
-        # Charger le modèle MobileNet sans les poids pré-entraînés
-        gigi = VGG16(
-            input_shape=shape,
-            include_top=False,
-            weights='imagenet'
-        )
-        gigi.trainable = False
-        model = tf.keras.Sequential([
-          tf.keras.layers.Rescaling(1./255, input_shape=(256,256,3)),
-          tf.keras.layers.RandomFlip("horizontal_and_vertical"),
-          tf.keras.layers.RandomRotation(0.2),
-          gigi,
-          tf.keras.layers.Flatten(),
-          tf.keras.layers.Dense(128, activation='relu'),
-          tf.keras.layers.Dropout(0.15),
-          tf.keras.layers.Dense(64, activation='relu'),
-          tf.keras.layers.Dropout(0.1),
-          tf.keras.layers.Dense(39, activation='softmax')
-        ])
+        # Geler les poids du noyau
+        core.trainable = False
+
+        x = core(x)
+        x = tf.keras.layers.GlobalAveragePooling2D()(x)
+        x = tf.keras.layers.Dense(128, activation='relu')(x)
+        x = tf.keras.layers.Dropout(0.15)(x)
+        x = tf.keras.layers.Dense(64, activation='relu')(x)
+        x = tf.keras.layers.Dropout(0.1)(x)
+        x = tf.keras.layers.Dense(38, activation='softmax')(x)
+        model = tf.keras.Model(inputs=[i], outputs=[x])
+
     print("✅ Model created")
     # Afficher les informations sur le modèle
     return model
 
-def compile(model, lr_rate = 0.002, dc_steps = 2000, dc_rate = 0.9):
+def compile(model, lr_rate = 0.001, dc_steps = 1000, dc_rate = 0.9):
     initial_learning_rate = lr_rate
     lr_schedule = tf.keras.optimizers.schedules.ExponentialDecay(
     initial_learning_rate,
