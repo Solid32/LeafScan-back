@@ -67,49 +67,67 @@ def operationnal(retrain=False, epoch=25,color_mode='rgb') :
     plt.savefig('learning_curve.png')
 
 def translate(y_pred):
-    dict_list = {0: 'Apple Apple scab',
-                 1: 'Apple Black rot',
-                 2: 'Apple Cedar apple rust',
-                 3: 'Apple healthy',
-                 4: 'Background without leaves',
-                 5: 'Blueberry healthy',
-                 6: 'Cherry Powdery mildew',
-                 7: 'Cherry healthy',
-                 8: 'Corn Cercospora leaf spot Gray leaf spot',
-                 9: 'Corn Common rust',
-                 10: 'Corn Northern Leaf Blight',
-                 11: 'Corn healthy',
-                 12: 'Grape Black rot',
-                 13: 'Grape Esca (Black Measles)',
-                 14: 'Grape Leaf blight (Isariopsis Leaf Spot)',
-                 15: 'Grape healthy',
-                 16: 'Orange Haunglongbing (Citrus greening)',
-                 17: 'Peach Bacterial spot',
-                 18: 'Peach healthy',
-                 19: 'Pepper bell Bacterial spot',
-                 20: 'Pepper bell healthy',
-                 21: 'Potato Early blight',
-                 22: 'Potato Late blight',
-                 23: 'Potato healthy',
-                 24: 'Raspberry healthy',
-                 25: 'Soybean healthy',
-                 26: 'Squash Powdery mildew',
-                 27: 'Strawberry Leaf scorch',
-                 28: 'Strawberry healthy',
-                 29: 'Tomato Bacterial spot',
-                 30: 'Tomato Early blight',
-                 31: 'Tomato Late blight',
-                 32: 'Tomato Leaf Mold',
-                 33: 'Tomato Septoria leaf spot',
-                 34: 'Tomato Spider mites Two-spotted spider mite',
-                 35: 'Tomato Target Spot',
-                 36: 'Tomato Tomato Yellow Leaf Curl Virus',
-                 37: 'Tomato Tomato mosaic virus',
-                 38: 'Tomato healthy'}
-    cat_plant = np.argsort(y_pred[0])[::-1][:3]
-    cat_test = y_pred[0][cat_plant]
-    results = [dict_list[key] for key in cat_plant.tolist()]
-    return {key:value for key, value in zip([dict_list[key] for key in cat_plant.tolist()],[[cat_test[i],cat_plant[i]] for i, elem in enumerate(results)])}
+    mapper = {0: 'Apple Apple scab',
+              1: 'Apple Black rot',
+              2: 'Apple Cedar apple rust',
+              3: 'Apple healthy',
+              4: 'Background without leaves',
+              5: 'Blueberry healthy',
+              6: 'Cherry Powdery mildew',
+              7: 'Cherry healthy',
+              8: 'Corn Cercospora leaf spot Gray leaf spot',
+              9: 'Corn Common rust',
+              10: 'Corn Northern Leaf Blight',
+              11: 'Corn healthy',
+              12: 'Grape Black rot',
+              13: 'Grape Esca (Black Measles)',
+              14: 'Grape Leaf blight (Isariopsis Leaf Spot)',
+              15: 'Grape healthy',
+              16: 'Orange Haunglongbing (Citrus greening)',
+              17: 'Peach Bacterial spot',
+              18: 'Peach healthy',
+              19: 'Pepper bell Bacterial spot',
+              20: 'Pepper bell healthy',
+              21: 'Potato Early blight',
+              22: 'Potato Late blight',
+              23: 'Potato healthy',
+              24: 'Raspberry healthy',
+              25: 'Soybean healthy',
+              26: 'Squash Powdery mildew',
+              27: 'Strawberry Leaf scorch',
+              28: 'Strawberry healthy',
+              29: 'Tomato Bacterial spot',
+              30: 'Tomato Early blight',
+              31: 'Tomato Late blight',
+              32: 'Tomato Leaf Mold',
+              33: 'Tomato Septoria leaf spot',
+              34: 'Tomato Spider mites Two-spotted spider mite',
+              35: 'Tomato Target Spot',
+              36: 'Tomato Tomato Yellow Leaf Curl Virus',
+              37: 'Tomato Tomato mosaic virus',
+              38: 'Tomato healthy'}
+
+    n_scores = 3
+    # Get the highest scores
+    ordered_scores = np.sort(y_pred, axis=1)
+    selected_scores = np.fliplr(ordered_scores)[:,:n_scores]
+    # Get indexes of these highest scores
+    ordered_indices = np.argsort(y_pred, axis=1)
+    selected_indices = np.fliplr(ordered_indices)[:,:n_scores]
+    # Get corresponding category names
+    selected_categories = np.vectorize(mapper.__getitem__)(selected_indices)
+
+    # Create list of dicts with categories and corresponding scores
+    result = []
+    for i in range(y_pred.shape[0]): # Loop over all predictions
+        scores = {
+            cat: float(score)
+            for cat, score in zip(selected_categories[i], selected_scores[i])
+        }
+        result.append(scores)
+
+    return result
+
 
 def pred(X):
 
@@ -117,9 +135,8 @@ def pred(X):
 
     model = load_model(MODELS_LOCATION + "/" + PROD_MODEL_NAME)
     y_pred = model.predict(X)
-    dict_pred = translate(y_pred)
+    return translate(y_pred)
 
-    return str(dict_pred)
 
 if __name__ == '__main__':
     operationnal(retrain=False, epoch=20)
