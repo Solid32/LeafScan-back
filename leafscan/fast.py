@@ -32,7 +32,7 @@ async def receive_image(img: UploadFile=File(...)):
     contents = await img.read()
     nparr = np.fromstring(contents, np.uint8)
     cv2_img = cv2.imdecode(nparr, cv2.IMREAD_COLOR)
-    #img_expended = np.expand_dims(cv2_img, axis=0)
+    img_expended = np.expand_dims(cv2_img, axis=0)
 
-    prediction = pred(cv2_img) #imput shape (1,256, 256, 3)
+    prediction = pred(img_expended) #imput shape (1,256, 256, 3)
     return prediction
