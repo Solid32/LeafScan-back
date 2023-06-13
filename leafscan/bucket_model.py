@@ -10,7 +10,7 @@ def verify_model_is_loaded():
     if os.path.isfile(MODELS_LOCATION + "/" + PROD_MODEL_NAME):
         print('model already exists on ' + MODELS_LOCATION + "/" + PROD_MODEL_NAME)
     else:
-        print('coping  model from bucket ....')
+        print('copying  model from bucket ....')
         load_from_bucket()
         print('model copied !')
 

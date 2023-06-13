@@ -17,13 +17,13 @@ RUN apt-get update && apt-get install ffmpeg libsm6 libxext6  -y
 
 
 # Copy everything we need into the image
-COPY leafscan leafscan
 #COPY api api
 #COPY scripts scripts
 COPY requirements.txt requirements.txt
 RUN pip install --upgrade pip
 RUN pip install -r requirements.txt
 
+COPY leafscan leafscan
 COPY setup.py setup.py
 RUN pip install .
 
