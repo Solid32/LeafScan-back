@@ -25,7 +25,7 @@ def initialize_model(shape):
         x = tf.keras.layers.Dropout(0.15)(x)
         x = tf.keras.layers.Dense(64, activation='relu')(x)
         x = tf.keras.layers.Dropout(0.1)(x)
-        x = tf.keras.layers.Dense(38, activation='softmax')(x)
+        x = tf.keras.layers.Dense(39, activation='softmax')(x)
         model = tf.keras.Model(inputs=[i], outputs=[x])
 
     print("✅ Model created")
