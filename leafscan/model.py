@@ -10,7 +10,7 @@ from tensorflow.keras.applications import VGG16
 def initialize_model(shape):
     mirrored_strategy = tf.distribute.MirroredStrategy()
     with mirrored_strategy.scope():
-            #-->
+
         i = tf.keras.layers.Input([None, None, 3], dtype=tf.uint8)
         x = tf.cast(i, tf.float32)
         x = tf.keras.applications.vgg16.preprocess_input(x)
@@ -28,8 +28,9 @@ def initialize_model(shape):
         x = tf.keras.layers.Dense(39, activation='softmax')(x)
         model = tf.keras.Model(inputs=[i], outputs=[x])
 
+    print('************************************************************')
     print("✅ Model created")
-    # Afficher les informations sur le modèle
+    print('************************************************************')
     return model
 
 def compile(model, lr_rate = 0.001, dc_steps = 1000, dc_rate = 0.9):
@@ -45,8 +46,9 @@ def compile(model, lr_rate = 0.001, dc_steps = 1000, dc_rate = 0.9):
                   loss=tf.keras.losses.SparseCategoricalCrossentropy(from_logits=False),
               metrics=['accuracy'])
 
-
+    print('************************************************************')
     print("✅ Model compiled")
+    print('************************************************************')
 
     return model
 
@@ -64,8 +66,9 @@ def train(model, train_ds , val_ds, epochs = 20, patience = 5):
         callbacks=[es],
         verbose=1
     )
-
+    print('************************************************************')
     print(f"✅ Model trained on {train_ds.cardinality()} rows with min val acc: {round(np.min(history.history['accuracy']), 2)}")
+    print('************************************************************')
 
     return model, history
 

@@ -27,11 +27,15 @@ def operationnal(retrain=False, epoch=25,color_mode='rgb') :
 
     if retrain == False:
         model = initialize_model(shape)
+        print('************************************************************')
         print("🚨 model initialized")
+        print('************************************************************')
     else :
         load_from_bucket()
         model = load_model('models')
+        print('************************************************************')
         print("🚨 model loaded")
+        print('************************************************************')
     compile(model)
     model, history = train(model, train_ds, val_ds, epoch)
     evaluate(model, test_ds)
