@@ -99,7 +99,7 @@ docker_deploy:
 		--project $(GCP_PROJECT_ID) \
 		--image $(GCR_MULTI_REGION)/$(GCP_PROJECT_ID)/$(DOCKER_IMAGE_NAME):latest \
 		--platform managed \
-		--memory=2Gi \
+		--memory=8Gi \
 		--region europe-west1 \
 		--env-vars-file .env.yaml
 
